@@ -5,7 +5,7 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      await publishMessage("C05JLAH7U80", file.file.url_private, res);
+      await publishMessage("C05JLAH7U80", "Download image: " + file.file.url_private, res);
       res.json({ ok: true });
     } else {
       res.send({
