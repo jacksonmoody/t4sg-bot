@@ -4,7 +4,10 @@ import { validate } from "./_validate";
 import { signingSecret } from "./_constants";
 
 export default async function events(req, res) {
-  if (!req.body) return;
+  if (!req.body) {
+    res.status(400).send({ error: "Invalid request" });
+    return;
+  }
   const type = req.body.type;
 
   if (type === "url_verification") {
