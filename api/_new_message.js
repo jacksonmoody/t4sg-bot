@@ -4,6 +4,8 @@ export async function new_message(req, res) {
   try {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "Hello, World!", res);
+    } else {
+      res.json({ ok: true });
     }
   } catch (e) {
     console.log(e);
