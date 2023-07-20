@@ -3,7 +3,8 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      await publishMessage("C05JLAH7U80", "Hello, Image!", res);
+      await publishMessage("C05JLAH7U80", "New snipe posted!", res);
+      console.log(event);
     } else {
       res.send({
         text: "Unsupported event type",
