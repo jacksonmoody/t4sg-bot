@@ -5,7 +5,9 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "Hello, Image!", res);
     } else {
-      await publishMessage("C05JLAH7U80", "Hello, Text!", res);
+      res.send({
+        text: "Unsupported event type",
+      })
     }
   } catch (e) {
     res.send({
@@ -29,7 +31,6 @@ async function publishMessage(id, payload, res) {
       },
       body: JSON.stringify(message),
     });
-    const data = await response.json();
     res.json({ ok: true });
   } catch (err) {
     res.send({
