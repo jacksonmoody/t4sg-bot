@@ -8,7 +8,9 @@ export async function new_message(req, res) {
       res.json({ ok: true });
     }
   } catch (e) {
-    console.log(e);
+    res.send({
+      text: `${err}`,
+    });
   }
 }
 
@@ -31,7 +33,6 @@ async function publishMessage(id, payload, res) {
     res.json({ ok: true });
   } catch (err) {
     res.send({
-      response_type: "ephemeral",
       text: `${err}`,
     });
   }
