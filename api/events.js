@@ -4,7 +4,7 @@ import { validate } from "./_validate";
 import { signingSecret } from "./_constants";
 
 export default async function events(req, res) {
-  if (!req.body.type) return;
+  if (!req.body) return;
   const type = req.body.type;
 
   if (type === "url_verification") {
@@ -12,6 +12,7 @@ export default async function events(req, res) {
   } else if (validate(req, signingSecret)) {
     if (type === "event_callback") {
       const event_type = req.body.event.type;
+      console.log(event_type);
       switch (event_type) {
         case "message":
           await new_message(req, res);

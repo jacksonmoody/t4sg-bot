@@ -3,13 +3,13 @@ export async function new_message(req, res) {
   let event = req.body.event;
   console.log(event);
   try {
-    await publishMessage("C05JLAH7U80", "Hello, World");
+    await publishMessage("C05JLAH7U80", "Hello, World", res);
   } catch (e) {
     console.log(e);
   }
 }
 
-async function publishMessage(id, payload) {
+async function publishMessage(id, payload, res) {
   const message = {
     channel: id,
     text: payload,
