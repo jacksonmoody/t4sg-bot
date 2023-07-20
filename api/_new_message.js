@@ -1,14 +1,12 @@
 import { token } from "./_constants";
 export async function new_message(req, res) {
   let event = req.body.event;
-  console.log(event);
-  res.send(event);
   try {
-    /*if (event.type == "file_shared") {
+    if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "Hello, Image!", res);
     } else {
       await publishMessage("C05JLAH7U80", "Hello, Text!", res);
-    }*/
+    }
   } catch (e) {
     res.send({
       text: `${err}`,

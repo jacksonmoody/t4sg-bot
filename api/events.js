@@ -16,7 +16,9 @@ export default async function events(req, res) {
     if (type === "event_callback") {
       await new_message(req, res);
     } else {
-      res.status(400).send({ error: "Invalid request" });
+      res.status(400).send({ error: "Invalid event type" });
     }
+  } else {
+    res.status(400).send({ error: "Invalid request" });
   }
 }
