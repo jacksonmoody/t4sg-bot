@@ -6,14 +6,21 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      await supabase.from("snipes").insert([
+      const { error } = await supabase.from("snipes").insert([
         {
           user_id: event.user_id,
           image: file.file.url_private,
           description: file.file.title
         }
       ]);
-      res.json({ ok: true });
+      if (error) {
+        console.log(error);
+        res.send({
+          text: `${error}`,
+        });
+      } else {
+        res.json({ ok: true });
+      }
     } else {
       res.send({
         text: "Unsupported event type",
