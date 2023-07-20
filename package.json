@@ -2,17 +2,10 @@
   "name": "t4sg-bot",
   "version": "1.0.0",
   "description": "T4SG Slack Bot",
-  "main": "app.js",
-  "scripts": {
-    "start": "node app.js"
-  },
   "dependencies": {
-    "@slack/bolt": "latest",
     "@supabase/supabase-js": "^2.26.0",
-    "dotenv": "^16.3.1"
-  },
-  "engines": {
-    "node": "17.x"
+    "dotenv": "^16.3.1",
+    "vercel": "^31.0.4"
   },
   "author": "Jackson Moody",
   "license": "MIT"
