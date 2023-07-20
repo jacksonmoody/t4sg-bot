@@ -1,4 +1,4 @@
-export function validateSlackRequest(event, signingSecret) {
+export function validate(event, signingSecret) {
   const requestBody = JSON.stringify(event["body"]);
 
   const headers = event.headers;
