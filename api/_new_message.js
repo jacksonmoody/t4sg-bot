@@ -1,11 +1,18 @@
 import { token } from "./_constants";
+import { supabase } from "./_constants";
 export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      //await publishMessage("C05JLAH7U80", "Download image: " + file.file.url_private, res);
+      await supabase.from("snipes").insert([
+        {
+          user_id: event.user_id,
+          image: file.file.url_private,
+          description: file.file.title
+        }
+      ]);
       res.json({ ok: true });
     } else {
       res.send({
