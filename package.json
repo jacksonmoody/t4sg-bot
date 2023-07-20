@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@slack/bolt": "latest",
+    "@supabase/supabase-js": "^2.26.0",
     "dotenv": "^16.3.1"
   },
   "engines": {
