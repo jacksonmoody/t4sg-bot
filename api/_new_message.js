@@ -3,9 +3,9 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      await publishMessage("C05JLAH7U80", "Hello, World!", res);
+      await publishMessage("C05JLAH7U80", "Hello, Image!", res);
     } else {
-      res.json({ ok: true });
+      await publishMessage("C05JLAH7U80", "Hello, Text!", res);
     }
   } catch (e) {
     res.send({

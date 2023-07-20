@@ -15,6 +15,8 @@ export default async function events(req, res) {
   } else if (validate(req, signingSecret)) {
     if (type === "event_callback") {
       await new_message(req, res);
+    } else {
+      res.status(400).send({ error: "Invalid request" });
     }
   }
 }
