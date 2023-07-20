@@ -4,6 +4,7 @@ import { validate } from "./_validate";
 import { signingSecret } from "./_constants";
 
 export default async function events(req, res) {
+  if (!req.body.type) return;
   const type = req.body.type;
 
   if (type === "url_verification") {

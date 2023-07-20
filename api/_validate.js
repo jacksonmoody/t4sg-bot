@@ -1,3 +1,5 @@
+const crypto = require('crypto');
+
 export function validate(event, signingSecret) {
   const requestBody = JSON.stringify(event["body"]);
 
