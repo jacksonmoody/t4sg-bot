@@ -9,12 +9,13 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      const fileID = await downloadImage(file.file.url_private_download, res);
-      await publishMessage("C05JLAH7U80", fileID, res);
+      const image = await downloadImage(file.file.url_private_download, res);
+      const imageData = await image.json();
+      await publishMessage("C05JLAH7U80", imageData, res);
       const { error } = await supabase.from("snipes").insert([
         {
           user_id: event.user_id,
-          image: fileID,
+          image: imageData,
           description: file.file.title,
         },
       ]);
@@ -92,9 +93,6 @@ async function downloadImage(url, res) {
         body: formdata,
       })
         .then((response) => {
-          console.log(response);
-          response = response.json();
-          publishMessage("C05JLAH7U80", "Image Uploaded", res);
           return response;
         })
         .catch((err) => {
