@@ -10,11 +10,11 @@ export async function new_message(req, res) {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download, res);
-      await publishMessage("C05JLAH7U80", image, res);
+      await publishMessage("C05JLAH7U80", image.data.link, res);
       const { error } = await supabase.from("snipes").insert([
         {
           user_id: event.user_id,
-          image: image,
+          image: image.data.link,
           description: file.file.title,
         },
       ]);
