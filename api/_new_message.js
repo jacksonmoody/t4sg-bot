@@ -9,7 +9,7 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      const fileID = await downloadImage(file.file.url_private, file.file.id, res);
+      const fileID = await downloadImage(file.file.url_private_download, file.file.id, res);
       await publishMessage("C05JLAH7U80", fileID, res);
       const { error } = await supabase.from("snipes").insert([
         {
