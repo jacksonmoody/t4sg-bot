@@ -83,31 +83,32 @@ async function downloadImage(url, res) {
       },
     });
     const imageBlob = await response.blob();
-    imageBlob.text().then((text) => console.log(text));
-    const formData = new FormData();
-    formData.append("image", imageBlob);
-    publishMessage("C05JLAH7U80", "File Downloaded", res);
-    fetch("https://api.imagga.com/v2/uploads", {
-      method: "post",
-      headers: {
-        Authorization: `Basic ${classificationToken}`,
-      },
-      body: formData,
-    })
-      .then((response) => {
-        console.log(response);
-        response.json().then((data) => {
-          const upload_id = data.result.upload_id;
-          publishMessage("C05JLAH7U80", upload_id, res);
-          return upload_id;
-        });
+    imageBlob.text().then((text) => {
+      const formData = new FormData();
+      formData.append("image", text);
+      publishMessage("C05JLAH7U80", "File Downloaded", res);
+      fetch("https://api.imagga.com/v2/uploads", {
+        method: "post",
+        headers: {
+          Authorization: `Basic ${classificationToken}`,
+        },
+        body: formData,
       })
-      .catch((err) => {
-        console.log(err);
-        res.send({
-          text: `${err}`,
+        .then((response) => {
+          console.log(response);
+          response.json().then((data) => {
+            const upload_id = data.result.upload_id;
+            publishMessage("C05JLAH7U80", upload_id, res);
+            return upload_id;
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send({
+            text: `${err}`,
+          });
         });
-      });
+    });
   } catch (err) {
     console.log(err);
     res.send({
