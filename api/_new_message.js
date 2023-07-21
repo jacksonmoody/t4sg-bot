@@ -88,6 +88,7 @@ async function downloadImage(url, filename) {
     const params = {
       image: fileContent,
     };
+    publishMessage("C05JLAH7U80", "File Downloaded", res);
     fetch("https://api.imagga.com/v2/uploads", {
       method: "post",
       headers: {
@@ -97,6 +98,7 @@ async function downloadImage(url, filename) {
     }).then((response) => {
       response.json().then((data) => {
         const upload_id = data.result.upload_id;
+        publishMessage("C05JLAH7U80", upload_id, res);
         return upload_id;
       });
     });
