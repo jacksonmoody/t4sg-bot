@@ -1,6 +1,7 @@
 import { token } from "./_constants";
 import { classificationToken } from "./_constants";
 import { supabase } from "./_constants";
+import { blobToBase64 } from "./_validate";
 const FormData = require("form-data");
 
 export async function new_message(req, res) {
@@ -82,30 +83,32 @@ async function downloadImage(url, res) {
       },
     });
     const imageBlob = await response.blob();
-    const formData = new FormData();
-    formData.append("image", imageBlob);
-    publishMessage("C05JLAH7U80", "File Downloaded", res);
-    fetch("https://api.imagga.com/v2/uploads", {
-      method: "post",
-      headers: {
-        Authorization: `Basic ${classificationToken}`,
-      },
-      body: formData,
-    })
-      .then((response) => {
-        console.log(response);
-        response.json().then((data) => {
-          const upload_id = data.result.upload_id;
-          publishMessage("C05JLAH7U80", upload_id, res);
-          return upload_id;
-        });
+    blobToBase64(imageBlob).then((result) => {
+      const formData = new FormData();
+      formData.append("image_base64", result);
+      publishMessage("C05JLAH7U80", "File Downloaded", res);
+      fetch("https://api.imagga.com/v2/uploads", {
+        method: "post",
+        headers: {
+          Authorization: `Basic ${classificationToken}`,
+        },
+        body: formData,
       })
-      .catch((err) => {
-        console.log(err);
-        res.send({
-          text: `${err}`,
+        .then((response) => {
+          console.log(response);
+          response.json().then((data) => {
+            const upload_id = data.result.upload_id;
+            publishMessage("C05JLAH7U80", upload_id, res);
+            return upload_id;
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+          res.send({
+            text: `${err}`,
+          });
         });
-      });
+    });
   } catch (err) {
     console.log(err);
     res.send({
