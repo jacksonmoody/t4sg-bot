@@ -81,12 +81,13 @@ async function downloadImage(url, res) {
         Authorization: `Bearer ${token}`,
       },
     });
+    publishMessage("C05JLAH7U80", "Image Downloaded", res);
     slackResponse.blob().then((blob) => {
+      publishMessage("C05JLAH7U80", "Image Blobbed", res);
       const imageBlob = blob;
       const formdata = new FormData();
       formdata.append("image", imageBlob);
-
-      const imgurResponse = fetch("https://api.imgur.com/3/image", {
+      fetch("https://api.imgur.com/3/image", {
         method: "POST",
         headers: {
           Authorization: imgurToken,
