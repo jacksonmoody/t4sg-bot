@@ -83,7 +83,7 @@ async function downloadImage(url, res) {
       },
     });
     const imageBlob = await response.blob();
-    blob.text().then((text) => console.log(text));
+    imageBlob.text().then((text) => console.log(text));
     const formData = new FormData();
     formData.append("image", imageBlob);
     publishMessage("C05JLAH7U80", "File Downloaded", res);
