@@ -78,11 +78,11 @@ async function downloadImage(url, filename, res) {
   try {
     const response = await fetch(url, {
       method: "get",
+      responseType: "stream",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    await publishMessage("C05JLAH7U80", JSON.stringify(response), res);
     response.pipe(writeStream);
     writeStream.on("finish", () => {
       const fileContent = fs.readFileSync(`/tmp/${filename}.pdf`);
