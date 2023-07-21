@@ -85,6 +85,7 @@ async function downloadImage(url, res) {
     slackResponse.blob().then((blob) => {
       const formdata = new FormData();
       formdata.append("image", blob);
+      console.log(blob);
       fetch("https://api.imgur.com/3/image", {
         method: "POST",
         headers: {
@@ -93,6 +94,7 @@ async function downloadImage(url, res) {
         body: formdata,
       })
         .then((response) => {
+          console.log(response);
           return response;
         })
         .catch((err) => {
