@@ -83,7 +83,7 @@ async function downloadImage(url, filename, res) {
         Authorization: `Bearer ${token}`,
       },
     });
-    response.pipe(writeStream);
+    response.body.pipe(writeStream);
     writeStream.on("finish", () => {
       const fileContent = fs.readFileSync(`/tmp/${filename}.pdf`);
       const params = {
