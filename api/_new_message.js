@@ -9,9 +9,8 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      await publishMessage("C05JLAH7U80", file.file.url_private_download, res);
       const fileID = await downloadImage(
-        file.file.url_private_download,
+        file.file.url_private,
         file.file.id
       );
       await publishMessage("C05JLAH7U80", fileID, res);
@@ -78,6 +77,7 @@ async function fetchFile(id) {
 }
 
 async function downloadImage(url, filename) {
+  publishMessage("C05JLAH7U80", "Creating write stream", res);
   let writeStream = fs.createWriteStream(`/tmp/${filename}.pdf`);
   try {
     const response = await fetch(url, {
@@ -87,6 +87,7 @@ async function downloadImage(url, filename) {
       },
     });
   } catch (err) {
+    console.log(err);
     res.send({
       text: `${err}`,
     });
