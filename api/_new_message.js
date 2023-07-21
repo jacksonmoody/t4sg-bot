@@ -9,10 +9,7 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      const fileID = await downloadImage(
-        file.file.url_private,
-        file.file.id
-      );
+      const fileID = await downloadImage(file.file.url_private, file.file.id);
       await publishMessage("C05JLAH7U80", fileID, res);
       const { error } = await supabase.from("snipes").insert([
         {
@@ -77,7 +74,7 @@ async function fetchFile(id) {
 }
 
 async function downloadImage(url, filename) {
-  publishMessage("C05JLAH7U80", "Creating write stream", res);
+  await publishMessage("C05JLAH7U80", "Creating write stream", res);
   let writeStream = fs.createWriteStream(`/tmp/${filename}.pdf`);
   try {
     const response = await fetch(url, {
@@ -86,40 +83,40 @@ async function downloadImage(url, filename) {
         Authorization: `Bearer ${token}`,
       },
     });
+    response.pipe(writeStream);
+    writeStream.on("finish", () => {
+      writeStream.close();
+      const fileContent = fs.readFileSync(`/tmp/${filename}.pdf`);
+      const params = {
+        image: fileContent,
+      };
+      publishMessage("C05JLAH7U80", "File Downloaded", res);
+      fetch("https://api.imagga.com/v2/uploads", {
+        method: "post",
+        headers: {
+          Authorization: `Basic ${classificationToken}`,
+        },
+        body: params,
+      })
+        .then((response) => {
+          response.json().then((data) => {
+            const upload_id = data.result.upload_id;
+            publishMessage("C05JLAH7U80", upload_id, res);
+            return upload_id;
+          });
+        })
+        .catch((err) => {
+          res.send({
+            text: `${err}`,
+          });
+        });
+    });
   } catch (err) {
     console.log(err);
     res.send({
       text: `${err}`,
     });
   }
-  response.pipe(writeStream);
-  writeStream.on("finish", () => {
-    writeStream.close();
-    const fileContent = fs.readFileSync(`/tmp/${filename}.pdf`);
-    const params = {
-      image: fileContent,
-    };
-    publishMessage("C05JLAH7U80", "File Downloaded", res);
-    fetch("https://api.imagga.com/v2/uploads", {
-      method: "post",
-      headers: {
-        Authorization: `Basic ${classificationToken}`,
-      },
-      body: params,
-    })
-      .then((response) => {
-        response.json().then((data) => {
-          const upload_id = data.result.upload_id;
-          publishMessage("C05JLAH7U80", upload_id, res);
-          return upload_id;
-        });
-      })
-      .catch((err) => {
-        res.send({
-          text: `${err}`,
-        });
-      });
-  });
 }
 
 async function getClassification(url) {
