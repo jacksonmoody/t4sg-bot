@@ -90,7 +90,7 @@ async function downloadImage(url, res) {
         Authorization: imgurToken,
       },
       body: {
-        image: imageBlob,
+        image: "https://i.ytimg.com/vi/9wgK4-O0GEA/maxresdefault.jpg",
       }
     });
     publishMessage("C05JLAH7U80", "Image Uploaded", res);
