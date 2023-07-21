@@ -82,9 +82,9 @@ async function downloadImage(url, filename, res) {
         Authorization: `Bearer ${token}`,
       },
     });
+    await publishMessage("C05JLAH7U80", JSON.stringify(response), res);
     response.pipe(writeStream);
     writeStream.on("finish", () => {
-      publishMessage("C05JLAH7U80", "File Downloaded", res);
       const fileContent = fs.readFileSync(`/tmp/${filename}.pdf`);
       const params = {
         image: fileContent,
