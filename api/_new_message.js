@@ -29,10 +29,10 @@ export async function new_message(req, res) {
                 type: "button",
                 text: {
                   type: "plain_text",
-                  text: "Click Me",
+                  text: "Contest Snipe 👀",
                   emoji: true,
                 },
-                value: "click_me_123",
+                value: "contest_snipe",
                 action_id: "actionId-0",
               },
             ],
