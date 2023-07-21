@@ -32,7 +32,7 @@ export async function new_message(req, res) {
     }
   } catch (e) {
     res.send({
-      text: `${err}`,
+      text: `${e}`,
     });
   }
 }
