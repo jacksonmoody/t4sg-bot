@@ -2,7 +2,6 @@ import { token } from "./_constants";
 import { classificationToken } from "./_constants";
 import { imgurToken } from "./_constants";
 import { supabase } from "./_constants";
-const FormData = require("form-data");
 
 export async function new_message(req, res) {
   let event = req.body.event;
@@ -83,10 +82,6 @@ async function downloadImage(url, res) {
       },
     });
     const imageBlob = await slackResponse.blob();
-    const body = await imageBlob.arrayBuffer();
-    const formData = new FormData();
-    formData.append("type", "file");
-    formData.append("image", body);
 
     const imgurResponse = await fetch("https://api.imgur.com/3/upload.json", {
       method: "POST",
@@ -94,7 +89,9 @@ async function downloadImage(url, res) {
         Accept: "application/json",
         Authorization: imgurToken,
       },
-      body: formData,
+      body: {
+        image: imageBlob,
+      }
     });
     publishMessage("C05JLAH7U80", "Image Uploaded", res);
     console.log(imgurResponse);
