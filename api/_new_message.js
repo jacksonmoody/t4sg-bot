@@ -83,7 +83,7 @@ async function downloadImage(url, res) {
     });
     const imageBlob = await slackResponse.blob();
 
-    const imgurResponse = await fetch("https://api.imgur.com/3/upload.json", {
+    const imgurResponse = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -94,8 +94,8 @@ async function downloadImage(url, res) {
       }
     });
     publishMessage("C05JLAH7U80", "Image Uploaded", res);
-    console.log(imgurResponse);
     const imgurData = await imgurResponse.json();
+    console.log(imgurResponse);
     return imgurData;
   } catch (err) {
     console.log(err);
