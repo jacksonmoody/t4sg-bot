@@ -1,7 +1,7 @@
 import { token } from "./_constants";
 import { classificationToken } from "./_constants";
 import { supabase } from "./_constants";
-const fs = require("fs");
+const FormData = require("form-data");
 
 export async function new_message(req, res) {
   let event = req.body.event;
@@ -9,11 +9,7 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      const fileID = await downloadImage(
-        file.file.url_private_download,
-        file.file.id,
-        res
-      );
+      const fileID = await downloadImage(file.file.url_private_download, res);
       await publishMessage("C05JLAH7U80", fileID, res);
       const { error } = await supabase.from("snipes").insert([
         {
@@ -77,7 +73,7 @@ async function fetchFile(id) {
   return data;
 }
 
-async function downloadImage(url, filename, res) {
+async function downloadImage(url, res) {
   try {
     const response = await fetch(url, {
       method: "get",
@@ -86,16 +82,16 @@ async function downloadImage(url, filename, res) {
       },
     });
     const imageBlob = await response.blob();
-    const params = {
-      image: imageBlob,
-    };
+    const formData = new FormData();
+    formData.append("image", imageBlob);
     publishMessage("C05JLAH7U80", "File Downloaded", res);
     fetch("https://api.imagga.com/v2/uploads", {
       method: "post",
       headers: {
+        "Content-Type": "application/json; charset=utf-8",
         Authorization: `Basic ${classificationToken}`,
       },
-      body: params,
+      body: formData,
     })
       .then((response) => {
         console.log(response);
