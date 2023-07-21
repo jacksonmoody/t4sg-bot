@@ -83,9 +83,10 @@ async function downloadImage(url, res) {
       },
     });
     const imageBlob = await slackResponse.blob();
+    const body = await imageBlob.arrayBuffer();
     const formData = new FormData();
     formData.append("type", "file");
-    formData.append("image", imageBlob);
+    formData.append("image", body);
 
     const imgurResponse = await fetch("https://api.imgur.com/3/upload.json", {
       method: "POST",
