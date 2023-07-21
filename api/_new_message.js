@@ -74,18 +74,18 @@ async function fetchFile(id) {
 }
 
 async function downloadImage(url, filename, res) {
-  let writeStream = fs.createWriteStream(`/tmp/${filename}.pdf`);
+  let writeStream = fs.createWriteStream(`/tmp/${filename}.png`);
   try {
     const response = await fetch(url, {
       method: "get",
-      responseType: "stream",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log(response);
     response.body.pipe(writeStream);
     writeStream.on("finish", () => {
-      const fileContent = fs.readFileSync(`/tmp/${filename}.pdf`);
+      const fileContent = fs.readFileSync(`/tmp/${filename}.png`);
       const params = {
         image: fileContent,
       };
