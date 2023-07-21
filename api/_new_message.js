@@ -7,41 +7,32 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
+      await publishMessage("C05JLAH7U80", "New Snipe Posted!");
       const file = await fetchFile(event.file_id);
-      const image = await downloadImage(file.file.url_private_download, res);
+      const image = await downloadImage(file.file.url_private_download);
       const classification = await getClassification(image.data.link);
       if (classification?.predictions.length > 0) {
         const classificationData = classification.predictions[0];
-        await publishMessage("C05JLAH7U80", "Class: " + classificationData.class + " Confidence: " + classificationData.confidence, res);
+        await publishMessage(
+          "C05JLAH7U80",
+          "Class: " +
+            classificationData.class +
+            ". Confidence: " +
+            classificationData.confidence
+        );
       }
-      const { error } = await supabase.from("snipes").insert([
+      await supabase.from("snipes").insert([
         {
           user_id: event.user_id,
           image: image.data.link,
           description: file.file.title,
         },
       ]);
-      if (error) {
-        res.send({
-          text: `${error}`,
-        });
-      } else {
-        res.json({ ok: true });
-      }
-    } else {
-      res.send({
-        text: "Unsupported event type",
-      });
     }
-  } catch (e) {
-    res.send({
-      text: `${e}`,
-    });
-  }
+  } catch (e) {}
 }
 
-async function publishMessage(id, payload, res) {
+async function publishMessage(id, payload) {
   const message = {
     channel: id,
     text: payload,
@@ -57,9 +48,6 @@ async function publishMessage(id, payload, res) {
       body: JSON.stringify(message),
     });
   } catch (err) {
-    res.send({
-      text: `${err}`,
-    });
   }
 }
 
@@ -76,7 +64,7 @@ async function fetchFile(id) {
   return data;
 }
 
-async function downloadImage(url, res) {
+async function downloadImage(url) {
   try {
     const slackResponse = await fetch(url, {
       method: "GET",
@@ -97,9 +85,6 @@ async function downloadImage(url, res) {
     const imgurData = await results.json();
     return imgurData;
   } catch (err) {
-    res.send({
-      text: `${err}`,
-    });
   }
 }
 
