@@ -13,30 +13,31 @@ export async function new_message(req, res) {
       const classification = await getClassification(image.data.link);
       if (classification?.predictions.length > 0) {
         const classificationData = classification.predictions[0];
-        await publishMessage(
-          "C05JLAH7U80",
-          "Class: " +
-            classificationData.class +
-            ". Confidence: " +
-            classificationData.confidence,
-          [
-            {
-              type: "actions",
-              elements: [
-                {
-                  type: "button",
-                  text: {
-                    type: "plain_text",
-                    text: "Contest Snipe 👀",
-                    emoji: true,
-                  },
-                  value: "contest_snipe",
-                  action_id: "actionId-0",
-                },
-              ],
+        await publishMessage("C05JLAH7U80", "", [
+          {
+            type: "section",
+            text: {
+              type: "plain_text",
+              text: "Confidence: " + classificationData.confidence,
+              emoji: true,
             },
-          ]
-        );
+          },
+          {
+            type: "actions",
+            elements: [
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Click Me",
+                  emoji: true,
+                },
+                value: "click_me_123",
+                action_id: "actionId-0",
+              },
+            ],
+          },
+        ]);
       }
       await supabase.from("snipes").insert([
         {
