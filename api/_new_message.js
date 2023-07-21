@@ -86,9 +86,8 @@ async function downloadImage(url, filename, res) {
       },
     });
     const imageBlob = await response.blob();
-    console.log(imageBlob);
     const params = {
-      image: fileContent,
+      image: imageBlob,
     };
     publishMessage("C05JLAH7U80", "File Downloaded", res);
     fetch("https://api.imagga.com/v2/uploads", {
