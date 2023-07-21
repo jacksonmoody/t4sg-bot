@@ -98,6 +98,7 @@ async function downloadImage(url, filename, res) {
       body: params,
     })
       .then((response) => {
+        console.log(response);
         response.json().then((data) => {
           const upload_id = data.result.upload_id;
           publishMessage("C05JLAH7U80", upload_id, res);
@@ -105,6 +106,7 @@ async function downloadImage(url, filename, res) {
         });
       })
       .catch((err) => {
+        console.log(err);
         res.send({
           text: `${err}`,
         });
