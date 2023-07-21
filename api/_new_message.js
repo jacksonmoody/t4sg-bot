@@ -9,7 +9,10 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      const fileID = await downloadImage(file.file.url_private_download, file.file.id);
+      const fileID = await downloadImage(
+        file.file.url_private_download,
+        file.file.id
+      );
       await publishMessage("C05JLAH7U80", fileID, res);
       const { error } = await supabase.from("snipes").insert([
         {
@@ -75,12 +78,19 @@ async function fetchFile(id) {
 
 async function downloadImage(url, filename) {
   let writeStream = fs.createWriteStream(`/tmp/${filename}.pdf`);
-  const response = await fetch(url, {
-    method: "get",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  publishMessage("C05JLAH7U80", "Write Stream Created", res);
+  try {
+    const response = await fetch(url, {
+      method: "get",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (err) {
+    res.send({
+      text: `${err}`,
+    });
+  }
   response.pipe(writeStream);
   writeStream.on("finish", () => {
     writeStream.close();
@@ -95,13 +105,19 @@ async function downloadImage(url, filename) {
         Authorization: `Basic ${classificationToken}`,
       },
       body: params,
-    }).then((response) => {
-      response.json().then((data) => {
-        const upload_id = data.result.upload_id;
-        publishMessage("C05JLAH7U80", upload_id, res);
-        return upload_id;
+    })
+      .then((response) => {
+        response.json().then((data) => {
+          const upload_id = data.result.upload_id;
+          publishMessage("C05JLAH7U80", upload_id, res);
+          return upload_id;
+        });
+      })
+      .catch((err) => {
+        res.send({
+          text: `${err}`,
+        });
       });
-    });
   });
 }
 
