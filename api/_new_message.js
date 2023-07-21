@@ -74,6 +74,7 @@ async function fetchFile(id) {
 }
 
 async function downloadImage(url, res) {
+  let response = null;
   try {
     const slackResponse = await fetch(url, {
       method: "GET",
@@ -81,9 +82,7 @@ async function downloadImage(url, res) {
         Authorization: `Bearer ${token}`,
       },
     });
-    publishMessage("C05JLAH7U80", "Image Downloaded", res);
     slackResponse.blob().then((blob) => {
-      publishMessage("C05JLAH7U80", "Image Blobbed", res);
       const imageBlob = blob;
       const formdata = new FormData();
       formdata.append("image", imageBlob);
@@ -93,11 +92,14 @@ async function downloadImage(url, res) {
           Authorization: imgurToken,
         },
         body: formdata,
-      }).then((response) => {
-        response = response.json();
-        publishMessage("C05JLAH7U80", "Image Uploaded", res);
-        return response;
-      });
+      })
+        .then((response) => {
+          response = response.json();
+          publishMessage("C05JLAH7U80", "Image Uploaded", res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     });
   } catch (err) {
     console.log(err);
@@ -105,6 +107,7 @@ async function downloadImage(url, res) {
       text: `${err}`,
     });
   }
+  return response;
 }
 
 async function getClassification(url) {
