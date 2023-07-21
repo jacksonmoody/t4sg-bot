@@ -38,6 +38,32 @@ export async function new_message(req, res) {
             ],
           },
         ]);
+      } else {
+        await publishMessage("C05JLAH7U80", "", [
+          {
+            type: "section",
+            text: {
+              type: "plain_text",
+              text: "No person detected 😢",
+              emoji: true,
+            },
+          },
+          {
+            type: "actions",
+            elements: [
+              {
+                type: "button",
+                text: {
+                  type: "plain_text",
+                  text: "Contest Snipe 👀",
+                  emoji: true,
+                },
+                value: "contest_snipe",
+                action_id: "actionId-0",
+              },
+            ],
+          },
+        ]);
       }
       await supabase.from("snipes").insert([
         {
