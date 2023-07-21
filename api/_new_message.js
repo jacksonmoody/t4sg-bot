@@ -1,6 +1,6 @@
-import { blob } from "stream/consumers";
 import { token } from "./_constants";
 import { classificationToken } from "./_constants";
+import { imgurToken } from "./_constants";
 import { supabase } from "./_constants";
 const FormData = require("form-data");
 
@@ -76,39 +76,29 @@ async function fetchFile(id) {
 
 async function downloadImage(url, res) {
   try {
-    const response = await fetch(url, {
+    const slackResponse = await fetch(url, {
       method: "get",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    const imageBlob = await response.blob();
-    imageBlob.text().then((text) => {
-      const formData = new FormData();
-      formData.append("image", text);
-      publishMessage("C05JLAH7U80", "File Downloaded", res);
-      fetch("https://api.imagga.com/v2/uploads", {
-        method: "post",
-        headers: {
-          Authorization: `Basic ${classificationToken}`,
-        },
-        body: formData,
-      })
-        .then((response) => {
-          console.log(response);
-          response.json().then((data) => {
-            const upload_id = data.result.upload_id;
-            publishMessage("C05JLAH7U80", upload_id, res);
-            return upload_id;
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          res.send({
-            text: `${err}`,
-          });
-        });
+    const imageBlob = await slackResponse.blob();
+    const formData = new FormData();
+    formData.append("type", "file");
+    formData.append("image", imageBlob);
+
+    const imgurResponse = await fetch("https://api.imgur.com/3/upload.json", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        Authorization: "Client-ID dc708f3823b7756",
+      },
+      body: formData,
     });
+    publishMessage("C05JLAH7U80", "Image Uploaded", res);
+    console.log(imgurResponse);
+    const imgurData = await imgurResponse.json();
+    return imgurData;
   } catch (err) {
     console.log(err);
     res.send({
