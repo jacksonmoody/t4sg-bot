@@ -83,15 +83,15 @@ async function downloadImage(url, res) {
     });
     const imageBlob = await slackResponse.blob();
 
+    var formdata = new FormData();
+formdata.append("image", "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
+
     const imgurResponse = await fetch("https://api.imgur.com/3/image", {
       method: "POST",
       headers: {
-        Accept: "application/json",
         Authorization: imgurToken,
       },
-      body: {
-        image: "https://i.ytimg.com/vi/9wgK4-O0GEA/maxresdefault.jpg",
-      }
+      body: formdata,
     });
     publishMessage("C05JLAH7U80", "Image Uploaded", res);
     const imgurData = await imgurResponse.json();
