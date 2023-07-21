@@ -20,7 +20,6 @@ export async function new_message(req, res) {
         },
       ]);
       if (error) {
-        console.log(error);
         res.send({
           text: `${error}`,
         });
@@ -95,7 +94,6 @@ async function downloadImage(url, res) {
     const imgurData = await results.json();
     return imgurData;
   } catch (err) {
-    console.log(err);
     res.send({
       text: `${err}`,
     });
@@ -107,5 +105,6 @@ async function getClassification(url) {
   const response = await fetch(baseURL + "?api_key=" + classificationToken + "?image=" + url, {
     method: "POST",
   });
-  return response;
+  const data = await response.json();
+  return data;
 }
