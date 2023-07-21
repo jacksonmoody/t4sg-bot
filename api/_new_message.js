@@ -74,8 +74,8 @@ async function fetchFile(id) {
 }
 
 async function downloadImage(url, filename, res) {
-  await publishMessage("C05JLAH7U80", "Creating write stream", res);
   let writeStream = fs.createWriteStream(`/tmp/${filename}.pdf`);
+  await publishMessage("C05JLAH7U80", "Creating write stream", res);
   try {
     const response = await fetch(url, {
       method: "get",
@@ -83,6 +83,7 @@ async function downloadImage(url, filename, res) {
         Authorization: `Bearer ${token}`,
       },
     });
+    await publishMessage("C05JLAH7U80", "Created write stream", res);
     response.pipe(writeStream);
     writeStream.on("finish", () => {
       writeStream.close();
