@@ -74,7 +74,6 @@ async function fetchFile(id) {
 }
 
 async function downloadImage(url, res) {
-  let response = "";
   try {
     const slackResponse = await fetch(url, {
       method: "GET",
@@ -84,6 +83,9 @@ async function downloadImage(url, res) {
     });
     slackResponse.blob().then((blob) => {
       const imageBlob = blob;
+      imageBlob.text().then((text) => {
+        console.log(text);
+      });
       const formdata = new FormData();
       formdata.append("image", imageBlob);
       fetch("https://api.imgur.com/3/image", {
@@ -97,6 +99,7 @@ async function downloadImage(url, res) {
           response = response.json();
           console.log(response);
           publishMessage("C05JLAH7U80", "Image Uploaded", res);
+          return response;
         })
         .catch((err) => {
           console.log(err);
@@ -108,7 +111,6 @@ async function downloadImage(url, res) {
       text: `${err}`,
     });
   }
-  return response;
 }
 
 async function getClassification(url) {
