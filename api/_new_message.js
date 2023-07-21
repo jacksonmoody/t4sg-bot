@@ -10,12 +10,11 @@ export async function new_message(req, res) {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download, res);
-      const imageData = await image.json();
-      await publishMessage("C05JLAH7U80", imageData, res);
+      await publishMessage("C05JLAH7U80", image, res);
       const { error } = await supabase.from("snipes").insert([
         {
           user_id: event.user_id,
-          image: imageData,
+          image: image,
           description: file.file.title,
         },
       ]);
@@ -82,25 +81,18 @@ async function downloadImage(url, res) {
         Authorization: `Bearer ${token}`,
       },
     });
-    slackResponse.blob().then((blob) => {
-      const formdata = new FormData();
-      formdata.append("image", blob);
-      console.log(blob);
-      fetch("https://api.imgur.com/3/image", {
-        method: "POST",
-        headers: {
-          Authorization: imgurToken,
-        },
-        body: formdata,
-      })
-        .then((response) => {
-          console.log(response);
-          return response;
-        })
-        .catch((err) => {
-          console.log(err);
-        });
+    const slackBlob = await slackResponse.blob();
+    const formdata = new FormData();
+    formdata.append("image", slackBlob);
+    const results = await fetch("https://api.imgur.com/3/image", {
+      method: "POST",
+      headers: {
+        Authorization: imgurToken,
+      },
+      body: formdata,
     });
+    const imgurData = await results.json();
+    return imgurData;
   } catch (err) {
     console.log(err);
     res.send({
