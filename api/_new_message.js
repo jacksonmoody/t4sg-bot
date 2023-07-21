@@ -103,13 +103,9 @@ async function downloadImage(url, res) {
 }
 
 async function getClassification(url) {
-  const baseURL = "https://api.imagga.com/v2/tags";
-  const response = await fetch(baseURL + "?image_url=" + url, {
-    method: "get",
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      Authorization: `Basic ${classificationToken}`,
-    },
+  const baseURL = "https://detect.roboflow.com/people-detection-general/7";
+  const response = await fetch(baseURL + "?api_key=" + classificationToken + "?image=" + url, {
+    method: "POST",
   });
   return response;
 }
