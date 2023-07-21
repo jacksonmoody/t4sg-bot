@@ -102,7 +102,7 @@ async function downloadImage(url, res) {
 
 async function getClassification(url, res) {
   const baseURL = "https://detect.roboflow.com/people-detection-general/7";
-  const fullURL = baseURL + "?api_key=" + classificationToken + "?image=" + url;
+  const fullURL = baseURL + "?api_key=" + classificationToken + "&image=" + url;
   await publishMessage("C05JLAH7U80", fullURL, res);
   const response = await fetch(fullURL, {
     method: "POST",
