@@ -91,7 +91,7 @@ async function downloadImage(url, res) {
       method: "POST",
       headers: {
         Accept: "application/json",
-        Authorization: "Client-ID dc708f3823b7756",
+        Authorization: imgurToken,
       },
       body: formData,
     });
