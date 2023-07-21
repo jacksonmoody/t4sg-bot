@@ -10,7 +10,7 @@ export async function new_message(req, res) {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download, res);
-      const classification = await getClassification(image.data.link);
+      const classification = await getClassification(image.data.link, res);
       await publishMessage("C05JLAH7U80", classification, res);
       const { error } = await supabase.from("snipes").insert([
         {
@@ -100,10 +100,10 @@ async function downloadImage(url, res) {
   }
 }
 
-async function getClassification(url) {
+async function getClassification(url, res) {
   const baseURL = "https://detect.roboflow.com/people-detection-general/7";
   const fullURL = baseURL + "?api_key=" + classificationToken + "?image=" + url;
-  console.log(fullURL);
+  await publishMessage("C05JLAH7U80", fullURL, res);
   const response = await fetch(fullURL, {
     method: "POST",
   });
