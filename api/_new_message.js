@@ -9,11 +9,11 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      await downloadImage(file.file.url_private_download, file.file.id);
+      const fileID = await downloadImage(file.file.url_private_download, file.file.id);
       const { error } = await supabase.from("snipes").insert([
         {
           user_id: event.user_id,
-          image: file.file.url_private_download,
+          image: fileID,
           description: file.file.title,
         },
       ]);
@@ -44,7 +44,7 @@ async function publishMessage(id, payload, res) {
   };
   try {
     const url = "https://slack.com/api/chat.postMessage";
-    const response = await fetch(url, {
+    await fetch(url, {
       method: "post",
       headers: {
         "Content-Type": "application/json; charset=utf-8",
@@ -94,7 +94,10 @@ async function downloadImage(url, filename) {
       },
       body: params,
     }).then((response) => {
-      console.log(response);
+      response.json().then((data) => {
+        const upload_id = data.result.upload_id;
+        return upload_id;
+      });
     });
   });
 }
