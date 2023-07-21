@@ -44,7 +44,7 @@ export async function new_message(req, res) {
                   },
                   text: {
                     type: "mrkdwn",
-                    text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval",
+                    text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval 👀",
                   },
                   confirm: {
                     type: "plain_text",
@@ -88,7 +88,7 @@ export async function new_message(req, res) {
                   },
                   text: {
                     type: "mrkdwn",
-                    text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval",
+                    text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval 👀",
                   },
                   confirm: {
                     type: "plain_text",

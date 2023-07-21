@@ -7,15 +7,11 @@ export default async function interactions(req, res) {
     res.status(400).send({ error: "Invalid request" });
     return;
   }
-  const type = req.body.type;
-
-  if (type === "url_verification") {
-    await challenge(req, res);
-  } else if (validate(req, signingSecret)) {
+  try {
     const data = await req.body.payload.json();
     console.log(data);
     res.status(200).send({});
-  } else {
+  } catch (err) {
     res.status(400).send({ error: "Invalid request" });
   }
 }
