@@ -88,7 +88,6 @@ async function downloadImage(url, res) {
     fetch("https://api.imagga.com/v2/uploads", {
       method: "post",
       headers: {
-        "Content-Type": "application/json; charset=utf-8",
         Authorization: `Basic ${classificationToken}`,
       },
       body: formData,
