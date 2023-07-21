@@ -1,3 +1,4 @@
+import { blob } from "stream/consumers";
 import { token } from "./_constants";
 import { classificationToken } from "./_constants";
 import { supabase } from "./_constants";
@@ -75,39 +76,37 @@ async function fetchFile(id) {
 
 async function downloadImage(url, res) {
   try {
-    const b64 = await fetch(url, {
+    const response = await fetch(url, {
       method: "get",
       headers: {
         Authorization: `Bearer ${token}`,
       },
+    });
+    const imageBlob = await response.blob();
+    blob.text().then((text) => console.log(text));
+    const formData = new FormData();
+    formData.append("image", imageBlob);
+    publishMessage("C05JLAH7U80", "File Downloaded", res);
+    fetch("https://api.imagga.com/v2/uploads", {
+      method: "post",
+      headers: {
+        Authorization: `Basic ${classificationToken}`,
+      },
+      body: formData,
     })
-      .then((response) => response.buffer())
-      .then((buffer) => {
-        const b64 = buffer.toString("base64");
-        const formData = new FormData();
-        formData.append("image_base64", b64);
-        publishMessage("C05JLAH7U80", "File Downloaded", res);
-        fetch("https://api.imagga.com/v2/uploads", {
-          method: "post",
-          headers: {
-            Authorization: `Basic ${classificationToken}`,
-          },
-          body: formData,
-        })
-          .then((response) => {
-            console.log(response);
-            response.json().then((data) => {
-              const upload_id = data.result.upload_id;
-              publishMessage("C05JLAH7U80", upload_id, res);
-              return upload_id;
-            });
-          })
-          .catch((err) => {
-            console.log(err);
-            res.send({
-              text: `${err}`,
-            });
-          });
+      .then((response) => {
+        console.log(response);
+        response.json().then((data) => {
+          const upload_id = data.result.upload_id;
+          publishMessage("C05JLAH7U80", upload_id, res);
+          return upload_id;
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        res.send({
+          text: `${err}`,
+        });
       });
   } catch (err) {
     console.log(err);
