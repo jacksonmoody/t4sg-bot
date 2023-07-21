@@ -18,7 +18,24 @@ export async function new_message(req, res) {
           "Class: " +
             classificationData.class +
             ". Confidence: " +
-            classificationData.confidence
+            classificationData.confidence,
+          [
+            {
+              type: "actions",
+              elements: [
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Contest Snipe 👀",
+                    emoji: true,
+                  },
+                  value: "contest_snipe",
+                  action_id: "actionId-0",
+                },
+              ],
+            },
+          ]
         );
       }
       await supabase.from("snipes").insert([
@@ -32,10 +49,11 @@ export async function new_message(req, res) {
   } catch (e) {}
 }
 
-async function publishMessage(id, payload) {
+async function publishMessage(id, payload, blocks = null) {
   const message = {
     channel: id,
     text: payload,
+    blocks: blocks,
   };
   try {
     const url = "https://slack.com/api/chat.postMessage";
@@ -47,8 +65,7 @@ async function publishMessage(id, payload) {
       },
       body: JSON.stringify(message),
     });
-  } catch (err) {
-  }
+  } catch (err) {}
 }
 
 async function fetchFile(id) {
@@ -84,8 +101,7 @@ async function downloadImage(url) {
     });
     const imgurData = await results.json();
     return imgurData;
-  } catch (err) {
-  }
+  } catch (err) {}
 }
 
 async function getClassification(url) {
