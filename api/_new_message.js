@@ -9,7 +9,7 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe Posted!", res);
       const file = await fetchFile(event.file_id);
-      const fileID = await downloadImage("https://hospodarets.com/images/logo2x.png", res);
+      const fileID = await downloadImage(file.file.url_private_download, res);
       await publishMessage("C05JLAH7U80", fileID, res);
       const { error } = await supabase.from("snipes").insert([
         {
@@ -76,27 +76,28 @@ async function fetchFile(id) {
 async function downloadImage(url, res) {
   try {
     const slackResponse = await fetch(url, {
-      method: "get",
+      method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    const imageBlob = await slackResponse.blob();
+    slackResponse.blob().then((blob) => {
+      const imageBlob = blob;
+      const formdata = new FormData();
+      formdata.append("image", imageBlob);
 
-    var formdata = new FormData();
-formdata.append("image", "R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7");
-
-    const imgurResponse = await fetch("https://api.imgur.com/3/image", {
-      method: "POST",
-      headers: {
-        Authorization: imgurToken,
-      },
-      body: formdata,
+      const imgurResponse = fetch("https://api.imgur.com/3/image", {
+        method: "POST",
+        headers: {
+          Authorization: imgurToken,
+        },
+        body: formdata,
+      }).then((response) => {
+        response = response.json();
+        publishMessage("C05JLAH7U80", "Image Uploaded", res);
+        return response;
+      });
     });
-    publishMessage("C05JLAH7U80", "Image Uploaded", res);
-    const imgurData = await imgurResponse.json();
-    console.log(imgurResponse);
-    return imgurData;
   } catch (err) {
     console.log(err);
     res.send({
