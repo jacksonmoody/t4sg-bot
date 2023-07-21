@@ -74,7 +74,7 @@ async function fetchFile(id) {
 }
 
 async function downloadImage(url, res) {
-  let response = null;
+  let response = "";
   try {
     const slackResponse = await fetch(url, {
       method: "GET",
@@ -95,6 +95,7 @@ async function downloadImage(url, res) {
       })
         .then((response) => {
           response = response.json();
+          console.log(response);
           publishMessage("C05JLAH7U80", "Image Uploaded", res);
         })
         .catch((err) => {
