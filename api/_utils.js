@@ -90,12 +90,12 @@ export async function getClassification(url) {
 }
 
 export async function updateUser(id, change) {
+  const { data: users, error } = await supabase
+    .from("users")
+    .select("*")
+    .eq("id", id);
+  if (error) console.log(error);
   if (change == "add") {
-    const { data: users, error } = await supabase
-      .from("users")
-      .select("*")
-      .eq("id", id);
-    if (error) console.log(error);
     if (users.length == 0) {
       await supabase.from("users").insert([
         {

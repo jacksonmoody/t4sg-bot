@@ -4,8 +4,6 @@ import { adminIDs } from "./_constants";
 export default async function interactions(req, res) {
   try {
     const data = req.body;
-    console.log(data);
-    //const payload = JSON.parse(req.body.payload);
     const command = data.command;
     const user = data.text;
     const admin = data.user_id;
