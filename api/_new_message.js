@@ -12,8 +12,7 @@ export async function new_message(req, res) {
   try {
     if (event.type == "file_shared") {
       const ts = await getLatestMessage("C05JLAH7U80");
-      console.log(ts);
-      await publishMessage("C05JLAH7U80", "New Snipe 📸", null, ts);
+      await publishMessage("C05JLAH7U80", "Nice Snipe! 📸", null, ts);
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download);
       const classification = await getClassification(image.data.link);
@@ -82,7 +81,9 @@ export async function new_message(req, res) {
           .select("*")
           .eq("id", event.user_id);
         if (error) console.log(error);
+        console.log(users);
         if (users.length == 0) {
+          console.log("user exists");
           await supabase.from("users").insert([
             {
               id: event.user_id,

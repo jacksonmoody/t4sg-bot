@@ -9,7 +9,6 @@ export default async function interactions(req, res) {
       const value = payload.message.blocks[1].elements[0].value;
       const image = JSON.parse(value).image;
       const author = JSON.parse(value).author;
-      console.log(value);
       await publishMessage(
         //C058Z5DHNHM
         "C05JLAH7U80",
