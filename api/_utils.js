@@ -163,3 +163,30 @@ export async function getLeaderboard() {
   });
   return blocks;
 }
+
+export async function getLatestSnipes() {
+  let blocks = [];
+  const { data: snipes, error } = await supabase
+    .from("snipes")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(5);
+  if (error) console.log(error);
+  snipes.forEach((snipe) => {
+    blocks.push({
+      type: "image",
+      image_url: snipe.image,
+    });
+    blocks.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: "<@" + snipe.user_id + ">",
+      },
+    });
+    blocks.push({
+      type: "divider",
+    });
+  });
+  return blocks;
+}

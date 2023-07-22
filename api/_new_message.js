@@ -6,6 +6,7 @@ import {
   getLatestMessage,
   updateUser,
   getLeaderboard,
+  getLatestSnipes,
 } from "./_utils";
 import { supabase, snipeChannel, token } from "./_constants";
 
@@ -143,6 +144,24 @@ export async function new_message(req, res) {
     } else if (event.type === "app_home_opened") {
       const user = event.user;
       const blocks = await getLeaderboard();
+      blocks.push({
+        type: "divider",
+      });
+      const snipeBlocks = await getLatestSnipes();
+      blocks.push({
+        type: "header",
+        text: {
+          type: "plain_text",
+          text: "Latest Snipes 📸",
+          emoji: true,
+        },
+      });
+      blocks.push({
+        type: "divider",
+      });
+      snipeBlocks.forEach((block) => {
+        blocks.push(block);
+      });
       const message = {
         user_id: user,
         view: {
