@@ -2,11 +2,17 @@ import { token } from "./_constants";
 import { classificationToken } from "./_constants";
 import { imgurToken } from "./_constants";
 
-export async function publishMessage(id, payload, blocks = null) {
+export async function publishMessage(
+  id,
+  payload,
+  blocks = null,
+  thread = null
+) {
   const message = {
     channel: id,
     text: payload,
     blocks: blocks,
+    thread_ts: thread,
   };
   try {
     const url = "https://slack.com/api/chat.postMessage";

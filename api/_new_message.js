@@ -5,6 +5,7 @@ import {
   getClassification,
 } from "./_utils";
 import { supabase } from "./_constants";
+import { _userResponse } from "@supabase/gotrue-js/dist/module/lib/fetch";
 
 export async function new_message(req, res) {
   let event = req.body.event;
@@ -12,6 +13,7 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       await publishMessage("C05JLAH7U80", "New Snipe 📸");
       const file = await fetchFile(event.file_id);
+      const ts = event.event_ts;
       const image = await downloadImage(file.file.url_private_download);
       const classification = await getClassification(image.data.link);
       if (classification?.predictions.length > 0) {
@@ -19,56 +21,61 @@ export async function new_message(req, res) {
         const confidence = Math.round(
           parseFloat(classificationData.confidence) * 100
         );
-        await publishMessage("C05JLAH7U80", "", [
-          {
-            type: "section",
-            text: {
-              type: "plain_text",
-              text:
-                "We're " +
-                confidence +
-                "% sure that's a valid snipe! 🤖 If you don't think so, you can contest it using the button below:",
-              emoji: true,
-            },
-          },
-          {
-            type: "actions",
-            elements: [
-              {
-                type: "button",
-                text: {
-                  type: "plain_text",
-                  text: "Contest Snipe 👀",
-                  emoji: true,
-                },
-                value: JSON.stringify({
-                  image: image.data.link,
-                  author: event.user_id,
-                  person: true,
-                }),
-                action_id: "contest-snipe",
-                confirm: {
-                  title: {
-                    type: "plain_text",
-                    text: "Are you sure?",
-                  },
-                  text: {
-                    type: "mrkdwn",
-                    text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval 👀",
-                  },
-                  confirm: {
-                    type: "plain_text",
-                    text: "Confirm",
-                  },
-                  deny: {
-                    type: "plain_text",
-                    text: "Cancel",
-                  },
-                },
+        await publishMessage(
+          "C05JLAH7U80",
+          "",
+          [
+            {
+              type: "section",
+              text: {
+                type: "plain_text",
+                text:
+                  "We're " +
+                  confidence +
+                  "% sure that's a valid snipe! 🤖 If you don't think so, you can contest it using the button below:",
+                emoji: true,
               },
-            ],
-          },
-        ]);
+            },
+            {
+              type: "actions",
+              elements: [
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Contest Snipe 👀",
+                    emoji: true,
+                  },
+                  value: JSON.stringify({
+                    image: image.data.link,
+                    author: event.user_id,
+                    person: true,
+                  }),
+                  action_id: "contest-snipe",
+                  confirm: {
+                    title: {
+                      type: "plain_text",
+                      text: "Are you sure?",
+                    },
+                    text: {
+                      type: "mrkdwn",
+                      text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval 👀",
+                    },
+                    confirm: {
+                      type: "plain_text",
+                      text: "Confirm",
+                    },
+                    deny: {
+                      type: "plain_text",
+                      text: "Cancel",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          ts
+        );
         await supabase.from("snipes").insert([
           {
             user_id: event.user_id,
@@ -76,54 +83,78 @@ export async function new_message(req, res) {
             description: file.file.title,
           },
         ]);
-      } else {
-        await publishMessage("C05JLAH7U80", "", [
-          {
-            type: "section",
-            text: {
-              type: "plain_text",
-              text: "We don't think that's a valid snipe 😢 It won't count unless you contest it using the button below: ",
-              emoji: true,
+        const { data: users, error } = await supabase
+          .from("users")
+          .select("*")
+          .eq("id", event.user_id);
+        if (error) console.log(error);
+        if (users.length == 0) {
+          await supabase.from("users").insert([
+            {
+              id: event.user_id,
+              score: 1,
             },
-          },
-          {
-            type: "actions",
-            elements: [
-              {
-                type: "button",
-                text: {
-                  type: "plain_text",
-                  text: "Contest Snipe 👀",
-                  emoji: true,
-                },
-                value: JSON.stringify({
-                  image: image.data.link,
-                  author: event.user_id,
-                  person: false,
-                }),
-                action_id: "contest-snipe",
-                confirm: {
-                  title: {
-                    type: "plain_text",
-                    text: "Are you sure?",
-                  },
-                  text: {
-                    type: "mrkdwn",
-                    text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval 👀",
-                  },
-                  confirm: {
-                    type: "plain_text",
-                    text: "Confirm",
-                  },
-                  deny: {
-                    type: "plain_text",
-                    text: "Cancel",
-                  },
-                },
+          ]);
+        } else {
+          const { error } = await supabase
+            .from("users")
+            .update({ id: event.user_id, score: users[0].score + 1 })
+            .eq("id", event.user_id);
+          if (error) console.log(error);
+        }
+      } else {
+        await publishMessage(
+          "C05JLAH7U80",
+          "",
+          [
+            {
+              type: "section",
+              text: {
+                type: "plain_text",
+                text: "We don't think that's a valid snipe 😢 It won't count unless you contest it using the button below: ",
+                emoji: true,
               },
-            ],
-          },
-        ]);
+            },
+            {
+              type: "actions",
+              elements: [
+                {
+                  type: "button",
+                  text: {
+                    type: "plain_text",
+                    text: "Contest Snipe 👀",
+                    emoji: true,
+                  },
+                  value: JSON.stringify({
+                    image: image.data.link,
+                    author: event.user_id,
+                    person: false,
+                  }),
+                  action_id: "contest-snipe",
+                  confirm: {
+                    title: {
+                      type: "plain_text",
+                      text: "Are you sure?",
+                    },
+                    text: {
+                      type: "mrkdwn",
+                      text: "Are you sure you want to contest this snipe? This will send the snipe to the T4SG gods for approval 👀",
+                    },
+                    confirm: {
+                      type: "plain_text",
+                      text: "Confirm",
+                    },
+                    deny: {
+                      type: "plain_text",
+                      text: "Cancel",
+                    },
+                  },
+                },
+              ],
+            },
+          ],
+          ts
+        );
       }
     }
   } catch (err) {
