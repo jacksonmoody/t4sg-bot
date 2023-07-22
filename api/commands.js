@@ -12,11 +12,19 @@ export default async function interactions(req, res) {
       case "/approve":
         if (adminIDs.includes(admin)) {
           if (workspaceUsers.includes(user)) {
-            await updateUser(user, "add", res);
-            res.status(200).send({
-              response_type: "in_channel",
-              text: "<@" + admin + "> has approved <@" + user + ">'s snipe!",
-            });
+            const success = await updateUser(user, "add");
+            if (success) {
+              res.status(200).send({
+                response_type: "in_channel",
+                text: "<@" + admin + "> has approved <@" + user + ">'s snipe!",
+              });
+            } else {
+              res
+                .status(200)
+                .send(
+                  "Sorry, something went wrong. Please try again using the code provided above."
+                );
+            }
           } else {
             res
               .status(200)
@@ -37,11 +45,19 @@ export default async function interactions(req, res) {
       case "/deny":
         if (adminIDs.includes(admin)) {
           if (workspaceUsers.includes(user)) {
-            await updateUser(user, "subtract", res);
-            res.status(200).send({
-              response_type: "in_channel",
-              text: "<@" + admin + "> has denied <@" + user + ">'s snipe",
-            });
+            const success = await updateUser(user, "subtract");
+            if (success) {
+              res.status(200).send({
+                response_type: "in_channel",
+                text: "<@" + admin + "> has denied <@" + user + ">'s snipe",
+              });
+            } else {
+              res
+                .status(200)
+                .send(
+                  "Sorry, something went wrong. Please try again using the code provided above."
+                );
+            }
           } else {
             res
               .status(200)

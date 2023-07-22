@@ -89,19 +89,14 @@ export async function getClassification(url) {
   return data;
 }
 
-export async function updateUser(id, change, res) {
+export async function updateUser(id, change) {
   const { data: users, error } = await supabase
     .from("users")
     .select("*")
     .eq("id", id);
-  if (error) console.log(error);
+  if (error) return false;
   if (users.length == 0 && change == "subtract") {
-    res
-      .status(200)
-      .send(
-        "Sorry, that snipe code is invalid. Please try again using the code provided above."
-      );
-    return;
+    return false;
   }
   if (change == "add") {
     if (users.length == 0) {
@@ -111,13 +106,15 @@ export async function updateUser(id, change, res) {
           score: 1,
         },
       ]);
+      return true;
     } else {
       const score = users[0].score + 1;
       const { error } = await supabase
         .from("users")
         .update({ score: score })
         .eq("id", id);
-      if (error) console.log(error);
+      if (error) return false;
+      return true;
     }
   } else if (change == "subtract") {
     let score = users[0].score;
@@ -130,7 +127,8 @@ export async function updateUser(id, change, res) {
       .from("users")
       .update({ score: score })
       .eq("id", id);
-    if (error) console.log(error);
+    if (error) return false;
+    return true;
   }
 }
 
