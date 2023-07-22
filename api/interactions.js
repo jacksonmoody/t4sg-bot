@@ -1,5 +1,4 @@
 import { publishMessage } from "./_utils";
-import { adminID, adminUsername } from "./_constants";
 
 export default async function interactions(req, res) {
   try {
@@ -9,10 +8,8 @@ export default async function interactions(req, res) {
       const user = payload.user.username;
       const value = payload.message.blocks[1].elements[0].value;
       await publishMessage(
-        "C05JLAH7U80",
-        "Hey, @" +
-          adminUsername +
-          "! " +
+        "C058Z5DHNHM",
+        "Hey, <!channel>! " +
           user +
           " wants to contest this snipe: " +
           value
