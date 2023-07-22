@@ -11,7 +11,7 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      const ts = getLatestMessage("C05JLAH7U80");
+      const ts = await getLatestMessage("C05JLAH7U80");
       console.log(ts);
       await publishMessage("C05JLAH7U80", "New Snipe 📸", null, ts);
       const file = await fetchFile(event.file_id);
