@@ -3,11 +3,12 @@ import { adminIDs } from "./_constants";
 
 export default async function interactions(req, res) {
   try {
-    console.log(req.body.payload);
+    const data = req.body;
+    console.log(data);
     //const payload = JSON.parse(req.body.payload);
-    const command = payload.command;
-    const user = payload.text;
-    const admin = payload.user_id;
+    const command = data.command;
+    const user = data.text;
+    const admin = data.user_id;
     switch (command) {
       case "/approve":
         if (adminIDs.includes(admin)) {
