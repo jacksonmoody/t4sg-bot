@@ -88,6 +88,7 @@ export async function new_message(req, res) {
             },
           ]);
         } else {
+          console.log(users);
           const { error } = await supabase
             .from("users")
             .update({ id: event.user_id, score: users[0].score + 1 })
