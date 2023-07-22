@@ -89,12 +89,20 @@ export async function getClassification(url) {
   return data;
 }
 
-export async function updateUser(id, change) {
+export async function updateUser(id, change, res) {
   const { data: users, error } = await supabase
     .from("users")
     .select("*")
     .eq("id", id);
   if (error) console.log(error);
+  if (users.length == 0 && change == "subtract") {
+    res
+      .status(200)
+      .send(
+        "Sorry, that snipe code is invalid. Please try again using the code provided above."
+      );
+    return;
+  }
   if (change == "add") {
     if (users.length == 0) {
       await supabase.from("users").insert([
@@ -192,7 +200,7 @@ export async function getLatestSnipes() {
   return blocks;
 }
 
-export async function getWorkspaceUsers(){
+export async function getWorkspaceUsers() {
   const url = "https://slack.com/api/users.list";
   const response = await fetch(url, {
     method: "GET",
@@ -209,6 +217,5 @@ export async function getWorkspaceUsers(){
       ids.push(member.id);
     }
   });
-  console.log(ids);
   return ids;
 }

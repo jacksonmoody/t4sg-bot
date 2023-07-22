@@ -12,7 +12,7 @@ export default async function interactions(req, res) {
       case "/approve":
         if (adminIDs.includes(admin)) {
           if (workspaceUsers.includes(user)) {
-            await updateUser(user, "add");
+            await updateUser(user, "add", res);
             res.status(200).send({
               response_type: "in_channel",
               text: "<@" + admin + "> has approved <@" + user + ">'s snipe!",
@@ -37,7 +37,7 @@ export default async function interactions(req, res) {
       case "/deny":
         if (adminIDs.includes(admin)) {
           if (workspaceUsers.includes(user)) {
-            await updateUser(user, "subtract");
+            await updateUser(user, "subtract", res);
             res.status(200).send({
               response_type: "in_channel",
               text: "<@" + admin + "> has denied <@" + user + ">'s snipe",
