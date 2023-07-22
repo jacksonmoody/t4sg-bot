@@ -10,8 +10,8 @@ export default async function auth(req, res) {
       "Content-Type": "application/json; charset=utf-8",
     },
   });
-  console.log(response);
   const data = await response.json();
+  console.log(data);
   const token = data.access_token;
   console.log(token);
   res.status(200).send("Success! You can close this window now.");
