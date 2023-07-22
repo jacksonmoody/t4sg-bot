@@ -10,19 +10,24 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      await publishMessage("C05JLAH7U80", "New Snipe 📸!");
+      await publishMessage("C05JLAH7U80", "New Snipe 📸");
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download);
       const classification = await getClassification(image.data.link);
       if (classification?.predictions.length > 0) {
         const classificationData = classification.predictions[0];
-        const confidence = Math.round(parseFloat(classificationData.confidence) * 100);
+        const confidence = Math.round(
+          parseFloat(classificationData.confidence) * 100
+        );
         await publishMessage("C05JLAH7U80", "", [
           {
             type: "section",
             text: {
               type: "plain_text",
-              text: "We're " + confidence + "% sure that's a valid snipe! 🤖 If you don't think so, you can contest it using the button below:",
+              text:
+                "We're " +
+                confidence +
+                "% sure that's a valid snipe! 🤖 If you don't think so, you can contest it using the button below:",
               emoji: true,
             },
           },
@@ -36,7 +41,11 @@ export async function new_message(req, res) {
                   text: "Contest Snipe 👀",
                   emoji: true,
                 },
-                value: JSON.stringify({image: image.data.link, author: event.user_id, person: true}),
+                value: JSON.stringify({
+                  image: image.data.link,
+                  author: event.user_id,
+                  person: true,
+                }),
                 action_id: "contest-snipe",
                 confirm: {
                   title: {
@@ -60,13 +69,20 @@ export async function new_message(req, res) {
             ],
           },
         ]);
+        await supabase.from("snipes").insert([
+          {
+            user_id: event.user_id,
+            image: image.data.link,
+            description: file.file.title,
+          },
+        ]);
       } else {
         await publishMessage("C05JLAH7U80", "", [
           {
             type: "section",
             text: {
               type: "plain_text",
-              text: "No person detected 😢 This snipe won't count unless you contest it using the button below: ",
+              text: "We don't think that's a valid snipe 😢 It won't count unless you contest it using the button below: ",
               emoji: true,
             },
           },
@@ -80,7 +96,11 @@ export async function new_message(req, res) {
                   text: "Contest Snipe 👀",
                   emoji: true,
                 },
-                value: JSON.stringify({image: image.data.link, author: event.user_id, person: false}),
+                value: JSON.stringify({
+                  image: image.data.link,
+                  author: event.user_id,
+                  person: false,
+                }),
                 action_id: "contest-snipe",
                 confirm: {
                   title: {
@@ -105,13 +125,6 @@ export async function new_message(req, res) {
           },
         ]);
       }
-      await supabase.from("snipes").insert([
-        {
-          user_id: event.user_id,
-          image: image.data.link,
-          description: file.file.title,
-        },
-      ]);
     }
   } catch (err) {
     console.log(err);

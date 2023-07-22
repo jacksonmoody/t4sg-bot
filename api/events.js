@@ -14,6 +14,7 @@ export default async function events(req, res) {
     await challenge(req, res);
   } else if (validate(req, signingSecret)) {
     if (type === "event_callback") {
+      console.log(req);
       await new_message(req, res);
       res.status(200).send({});
     } else {
