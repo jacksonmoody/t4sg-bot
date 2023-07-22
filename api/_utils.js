@@ -29,6 +29,19 @@ export async function publishMessage(
   }
 }
 
+export async function getLatestMessage(id) {
+    const url = "https://slack.com/api/conversations.history?channel=" + id;
+    const response = await fetch(url, {
+        method: "GET",
+        headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: `Bearer ${token}`,
+        },
+    });
+    const data = await response.json();
+    return data.messages[0].ts;
+}
+
 export async function fetchFile(id) {
   const url = "https://slack.com/api/files.info?file=" + id;
   const response = await fetch(url, {

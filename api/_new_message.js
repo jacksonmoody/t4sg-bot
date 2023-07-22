@@ -3,6 +3,7 @@ import {
   fetchFile,
   downloadImage,
   getClassification,
+  getLatestMessage,
 } from "./_utils";
 import { supabase } from "./_constants";
 
@@ -10,7 +11,7 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      const ts = event.event_ts;
+      const ts = getLatestMessage("C05JLAH7U80");
       console.log(ts);
       await publishMessage("C05JLAH7U80", "New Snipe 📸", null, ts);
       const file = await fetchFile(event.file_id);
@@ -89,6 +90,7 @@ export async function new_message(req, res) {
             },
           ]);
         } else {
+          console.log("user exists");
           const score = users[0].score + 1;
           console.log(score);
           const { error } = await supabase
