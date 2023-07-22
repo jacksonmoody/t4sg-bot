@@ -90,7 +90,8 @@ export async function new_message(req, res) {
           ]);
         } else {
           const score = users[0].score + 1;
-          await supabase.from("users").update({ score: score }).eq("id", event.user_id);
+          const { data: newUser, error } = await supabase.from("users").update({ score: score }).eq("id", event.user_id).select();
+          console.log(newUser);
           if (error) console.log(error);
         }
         await supabase.from("snipes").insert([
