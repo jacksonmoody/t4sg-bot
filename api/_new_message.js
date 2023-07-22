@@ -6,14 +6,14 @@ import {
   getLatestMessage,
   updateUser
 } from "./_utils";
-import { supabase } from "./_constants";
+import { supabase, snipeChannel } from "./_constants";
 
 export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      const ts = await getLatestMessage("C05JLAH7U80");
-      await publishMessage("C05JLAH7U80", "Nice Snipe! 📸", null, ts);
+      const ts = await getLatestMessage(snipeChannel);
+      await publishMessage(snipeChannel, "Nice Snipe! 📸", null, ts);
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download);
       const classification = await getClassification(image.data.link);
@@ -23,7 +23,7 @@ export async function new_message(req, res) {
           parseFloat(classificationData.confidence) * 100
         );
         await publishMessage(
-          "C05JLAH7U80",
+          snipeChannel,
           "",
           [
             {
@@ -87,7 +87,7 @@ export async function new_message(req, res) {
         ]);
       } else {
         await publishMessage(
-          "C05JLAH7U80",
+          snipeChannel,
           "",
           [
             {

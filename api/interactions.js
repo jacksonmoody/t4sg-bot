@@ -1,4 +1,5 @@
 import { publishMessage } from "./_utils";
+import { engagementChannel } from "./_constants";
 
 export default async function interactions(req, res) {
   try {
@@ -10,8 +11,7 @@ export default async function interactions(req, res) {
       const image = JSON.parse(value).image;
       const author = JSON.parse(value).author;
       await publishMessage(
-        //C058Z5DHNHM
-        "C05JLAH7U80",
+        engagementChannel,
         "Hey, <!channel>! <@" +
           user +
           "> wants to contest <@" +
@@ -20,7 +20,7 @@ export default async function interactions(req, res) {
           image
       );
       await publishMessage(
-        "C05JLAH7U80",
+        engagementChannel,
         "Type `/approve " +
           author +
           "` to approve the snipe or `/deny " +
