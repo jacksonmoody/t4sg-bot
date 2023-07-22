@@ -1,5 +1,6 @@
 import { publishMessage } from "./_utils";
 import { adminID, adminUsername } from "./_constants";
+import { validate } from "./_validate";
 
 export default async function interactions(req, res) {
   if (validate(req, signingSecret)) {
@@ -13,7 +14,7 @@ export default async function interactions(req, res) {
         await publishMessage(
           adminID,
           "Hey, @" +
-            user +
+            adminUsername +
             "! " +
             user +
             " wants to contest this snipe: " +
