@@ -202,7 +202,6 @@ export async function getWorkspaceUsers(){
     },
   });
   const data = await response.json();
-  console.log(data);
   const members = data.members;
   const ids = [];
   members.forEach((member) => {
@@ -210,5 +209,6 @@ export async function getWorkspaceUsers(){
       ids.push(member.id);
     }
   });
+  console.log(ids);
   return ids;
 }
