@@ -176,6 +176,7 @@ export async function getLatestSnipes() {
     blocks.push({
       type: "image",
       image_url: snipe.image,
+      alt_text: snipe.description,
     });
     blocks.push({
       type: "section",

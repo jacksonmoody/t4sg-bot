@@ -147,9 +147,7 @@ export async function new_message(req, res) {
       blocks.push({
         type: "divider",
       });
-      console.log("first blocks")
       const snipeBlocks = await getLatestSnipes();
-      console.log("second blocks");
       blocks.push({
         type: "header",
         text: {
@@ -171,6 +169,7 @@ export async function new_message(req, res) {
           blocks: blocks,
         },
       };
+      console.log(blocks);
       try {
         const url = "https://slack.com/api/views.publish";
         const result = await fetch(url, {
@@ -181,7 +180,7 @@ export async function new_message(req, res) {
           },
           body: JSON.stringify(message),
         });
-        console.log(result);
+        console.log(result.json());
       } catch (err) {
         console.log(err);
       }
