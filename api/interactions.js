@@ -8,9 +8,8 @@ export default async function interactions(req, res) {
     if (type === "block_actions") {
       const user = payload.user.username;
       const value = payload.message.blocks[1].elements[0].value;
-      console.log(value);
       await publishMessage(
-        adminID,
+        "C05JLAH7U80",
         "Hey, @" +
           adminUsername +
           "! " +
