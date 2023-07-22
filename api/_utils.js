@@ -158,12 +158,15 @@ export async function getLeaderboard() {
         type: "mrkdwn",
         text:
           "*" +
-          (index + 1) +
-          ".* <@" +
-          user.id +
-          "> - " +
-          user.score +
-          " points",
+            (index + 1) +
+            ".* <@" +
+            user.id +
+            "> - " +
+            user.score +
+            user.score ==
+          1
+            ? " point"
+            : " points",
       },
     });
   });
