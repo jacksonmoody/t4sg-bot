@@ -169,6 +169,7 @@ export async function new_message(req, res) {
           blocks: blocks,
         },
       };
+      console.log(blocks);
       try {
         const url = "https://slack.com/api/views.publish";
         await fetch(url, {
