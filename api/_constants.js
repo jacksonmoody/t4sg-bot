@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-export const snipeChannel = "C05JLAH7U80";
+export const snipeChannel = "C05J9K19H5Y";
 export const engagementChannel = "C058Z5DHNHM"; 
 export const adminIDs = ["U05B912EU75"];
 export const token = process.env.SLACK_BOT_TOKEN;
