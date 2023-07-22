@@ -10,18 +10,19 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      await publishMessage("C05JLAH7U80", "New Snipe Posted!");
+      await publishMessage("C05JLAH7U80", "New Snipe 📸!");
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download);
       const classification = await getClassification(image.data.link);
       if (classification?.predictions.length > 0) {
         const classificationData = classification.predictions[0];
+        const confidence = Math.round(parseFloat(classificationData.confidence) * 100);
         await publishMessage("C05JLAH7U80", "", [
           {
             type: "section",
             text: {
               type: "plain_text",
-              text: "Confidence: " + classificationData.confidence,
+              text: "We're " + confidence + "% sure that's a valid snipe! 🤖 If you don't think so, you can contest it using the button below:",
               emoji: true,
             },
           },
@@ -35,7 +36,7 @@ export async function new_message(req, res) {
                   text: "Contest Snipe 👀",
                   emoji: true,
                 },
-                value: JSON.stringify({image: image.data.link, author: event.user_id}),
+                value: JSON.stringify({image: image.data.link, author: event.user_id, person: true}),
                 action_id: "contest-snipe",
                 confirm: {
                   title: {
@@ -65,7 +66,7 @@ export async function new_message(req, res) {
             type: "section",
             text: {
               type: "plain_text",
-              text: "No person detected 😢",
+              text: "No person detected 😢 This snipe won't count unless you contest it using the button below: ",
               emoji: true,
             },
           },
@@ -79,7 +80,7 @@ export async function new_message(req, res) {
                   text: "Contest Snipe 👀",
                   emoji: true,
                 },
-                value: JSON.stringify({image: image.data.link, author: event.user_id}),
+                value: JSON.stringify({image: image.data.link, author: event.user_id, person: false}),
                 action_id: "contest-snipe",
                 confirm: {
                   title: {
@@ -112,5 +113,7 @@ export async function new_message(req, res) {
         },
       ]);
     }
-  } catch (e) {}
+  } catch (err) {
+    console.log(err);
+  }
 }
