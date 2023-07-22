@@ -11,6 +11,7 @@ export async function new_message(req, res) {
   try {
     if (event.type == "file_shared") {
       const ts = event.event_ts;
+      console.log(ts);
       await publishMessage("C05JLAH7U80", "New Snipe 📸", null, ts);
       const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download);
@@ -88,10 +89,11 @@ export async function new_message(req, res) {
             },
           ]);
         } else {
-          console.log(users);
+          const score = users[0].score + 1;
+          console.log(score);
           const { error } = await supabase
             .from("users")
-            .update({ id: event.user_id, score: users[0].score + 1 })
+            .update({ id: event.user_id, score: score + 1 })
             .eq("id", event.user_id);
           if (error) console.log(error);
         }
