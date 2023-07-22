@@ -4,7 +4,7 @@ import {
   downloadImage,
   getClassification,
   getLatestMessage,
-  updateUser
+  updateUser,
 } from "./_utils";
 import { supabase, snipeChannel } from "./_constants";
 
