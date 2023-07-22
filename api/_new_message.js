@@ -10,9 +10,9 @@ export async function new_message(req, res) {
   let event = req.body.event;
   try {
     if (event.type == "file_shared") {
-      await publishMessage("C05JLAH7U80", "New Snipe 📸");
-      const file = await fetchFile(event.file_id);
       const ts = event.event_ts;
+      await publishMessage("C05JLAH7U80", "New Snipe 📸", null, ts);
+      const file = await fetchFile(event.file_id);
       const image = await downloadImage(file.file.url_private_download);
       const classification = await getClassification(image.data.link);
       if (classification?.predictions.length > 0) {
@@ -75,13 +75,6 @@ export async function new_message(req, res) {
           ],
           ts
         );
-        await supabase.from("snipes").insert([
-          {
-            user_id: event.user_id,
-            image: image.data.link,
-            description: file.file.title,
-          },
-        ]);
         const { data: users, error } = await supabase
           .from("users")
           .select("*")
@@ -101,6 +94,13 @@ export async function new_message(req, res) {
             .eq("id", event.user_id);
           if (error) console.log(error);
         }
+        await supabase.from("snipes").insert([
+          {
+            user_id: event.user_id,
+            image: image.data.link,
+            description: file.file.title,
+          },
+        ]);
       } else {
         await publishMessage(
           "C05JLAH7U80",
