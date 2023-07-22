@@ -18,7 +18,9 @@ export async function publishMessage(id, payload, blocks = null) {
       },
       body: JSON.stringify(message),
     });
-  } catch (err) {}
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 export async function fetchFile(id) {
