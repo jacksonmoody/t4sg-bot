@@ -1,5 +1,5 @@
 import { publishMessage } from "./_utils";
-import { adminID, adminUsername } from "./_constants";
+import { adminID, adminUsername, signingSecret } from "./_constants";
 import { validate } from "./_validate";
 
 export default async function interactions(req, res) {
