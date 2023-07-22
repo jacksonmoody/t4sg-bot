@@ -90,12 +90,7 @@ export async function new_message(req, res) {
           ]);
         } else {
           const score = users[0].score + 1;
-          const { data, error } = await supabase
-            .from("users")
-            .update({ id: event.user_id, score: score })
-            .eq("id", "U05B912EU75")
-            .select();
-          console.log(data);
+          await supabase.from("users").update({ score: score }).eq("id", event.user_id);
           if (error) console.log(error);
         }
         await supabase.from("snipes").insert([
