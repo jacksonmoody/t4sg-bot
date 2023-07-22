@@ -1,6 +1,7 @@
 import { token } from "./_constants";
 import { classificationToken } from "./_constants";
 import { imgurToken } from "./_constants";
+import { supabase } from "./_constants";
 
 export async function publishMessage(
   id,
@@ -30,16 +31,16 @@ export async function publishMessage(
 }
 
 export async function getLatestMessage(id) {
-    const url = "https://slack.com/api/conversations.history?channel=" + id;
-    const response = await fetch(url, {
-        method: "GET",
-        headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: `Bearer ${token}`,
-        },
-    });
-    const data = await response.json();
-    return data.messages[0].ts;
+  const url = "https://slack.com/api/conversations.history?channel=" + id;
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  return data.messages[0].ts;
 }
 
 export async function fetchFile(id) {
@@ -86,4 +87,41 @@ export async function getClassification(url) {
   });
   const data = await response.json();
   return data;
+}
+
+export async function updateUser(id, change) {
+  if (change == "add") {
+    const { data: users, error } = await supabase
+      .from("users")
+      .select("*")
+      .eq("id", id);
+    if (error) console.log(error);
+    if (users.length == 0) {
+      await supabase.from("users").insert([
+        {
+          id: id,
+          score: 1,
+        },
+      ]);
+    } else {
+      const score = users[0].score + 1;
+      const { error } = await supabase
+        .from("users")
+        .update({ score: score })
+        .eq("id", id);
+      if (error) console.log(error);
+    }
+  } else if (change == "subtract") {
+    let score = users[0].score;
+    if (score > 0) {
+      score = score - 1;
+    } else {
+      score = 0;
+    }
+    const { error } = await supabase
+      .from("users")
+      .update({ score: score })
+      .eq("id", id);
+    if (error) console.log(error);
+  }
 }

@@ -4,6 +4,7 @@ import {
   downloadImage,
   getClassification,
   getLatestMessage,
+  updateUser
 } from "./_utils";
 import { supabase } from "./_constants";
 
@@ -76,24 +77,7 @@ export async function new_message(req, res) {
           ],
           ts
         );
-        const { data: users, error } = await supabase
-          .from("users")
-          .select("*")
-          .eq("id", event.user_id);
-        if (error) console.log(error);
-        if (users.length == 0) {
-          await supabase.from("users").insert([
-            {
-              id: event.user_id,
-              score: 1,
-            },
-          ]);
-        } else {
-          const score = users[0].score + 1;
-          const { data: newUser, error } = await supabase.from("users").update({ score: score }).eq("id", event.user_id).select();
-          console.log(newUser);
-          if (error) console.log(error);
-        }
+        await updateUser(event.user_id, "add");
         await supabase.from("snipes").insert([
           {
             user_id: event.user_id,
