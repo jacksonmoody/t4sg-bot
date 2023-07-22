@@ -35,7 +35,7 @@ export async function new_message(req, res) {
                   text: "Contest Snipe 👀",
                   emoji: true,
                 },
-                value: image.data.link,
+                value: JSON.stringify({image: image.data.link, author: event.user_id}),
                 action_id: "contest-snipe",
                 confirm: {
                   title: {
@@ -79,7 +79,7 @@ export async function new_message(req, res) {
                   text: "Contest Snipe 👀",
                   emoji: true,
                 },
-                value: image.data.link,
+                value: JSON.stringify({image: image.data.link, author: event.user_id}),
                 action_id: "contest-snipe",
                 confirm: {
                   title: {
