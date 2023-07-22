@@ -1,4 +1,4 @@
-import { updateUser, getLeaderboard } from "./_utils";
+import { updateUser, getLeaderboard, getWorkspaceUsers } from "./_utils";
 import { adminIDs } from "./_constants";
 
 export default async function interactions(req, res) {
@@ -7,11 +7,23 @@ export default async function interactions(req, res) {
     const command = data.command;
     const user = data.text;
     const admin = data.user_id;
+    const workspaceUsers = await getWorkspaceUsers();
     switch (command) {
       case "/approve":
         if (adminIDs.includes(admin)) {
-          await updateUser(user, "add");
-          res.status(200).send("Approval successful!");
+          if (workspaceUsers.includes(user)) {
+            await updateUser(user, "add");
+            res.status(200).send({
+              response_type: "in_channel",
+              text: "<@" + admin + "> has approved <@" + user + ">'s snipe!",
+            });
+          } else {
+            res
+              .status(200)
+              .send(
+                "Sorry, that snipe code is invalid. Please try again using the code provided above."
+              );
+          }
         } else {
           res
             .status(200)
@@ -24,8 +36,19 @@ export default async function interactions(req, res) {
         break;
       case "/deny":
         if (adminIDs.includes(admin)) {
-          await updateUser(user, "subtract");
-          res.status(200).send("Denial successful!");
+          if (workspaceUsers.includes(user)) {
+            await updateUser(user, "subtract");
+            res.status(200).send({
+              response_type: "in_channel",
+              text: "<@" + admin + "> has denied <@" + user + ">'s snipe",
+            });
+          } else {
+            res
+              .status(200)
+              .send(
+                "Sorry, that snipe code is invalid. Please try again using the code provided above."
+              );
+          }
         } else {
           res
             .status(200)

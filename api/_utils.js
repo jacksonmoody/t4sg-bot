@@ -191,3 +191,23 @@ export async function getLatestSnipes() {
   });
   return blocks;
 }
+
+export async function getWorkspaceUsers(){
+  const url = "https://slack.com/api/users.list";
+  const response = await fetch(url, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  const data = await response.json();
+  const members = data.members;
+  const ids = [];
+  members.forEach((member) => {
+    if (!member.is_bot && !member.deleted) {
+      ids.push(member.id);
+    }
+  });
+  return ids;
+}
