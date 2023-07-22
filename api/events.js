@@ -14,7 +14,11 @@ export default async function events(req, res) {
     await challenge(req, res);
   } else if (validate(req, signingSecret)) {
     if (type === "event_callback") {
-      console.log(req);
+      console.log(req.headers["x-slack-retry-num"]);
+      if (req.headers["x-slack-retry-num"] > 0) {
+        res.status(200).send({});
+        return;
+      }
       await new_message(req, res);
       res.status(200).send({});
     } else {
