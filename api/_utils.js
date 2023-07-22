@@ -152,21 +152,18 @@ export async function getLeaderboard() {
     type: "divider",
   });
   users.forEach((user, index) => {
+    let point = "";
+    if (user.score == 1) {
+      point = " point";
+    } else {
+      point = " points";
+    }
     blocks.push({
       type: "section",
       text: {
         type: "mrkdwn",
         text:
-          "*" +
-            (index + 1) +
-            ".* <@" +
-            user.id +
-            "> - " +
-            user.score +
-            user.score ==
-          1
-            ? " point"
-            : " points",
+          "*" + (index + 1) + ".* <@" + user.id + "> - " + user.score + point,
       },
     });
   });
