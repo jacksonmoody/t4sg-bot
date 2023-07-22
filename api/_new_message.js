@@ -5,7 +5,6 @@ import {
   getClassification,
 } from "./_utils";
 import { supabase } from "./_constants";
-import { _userResponse } from "@supabase/gotrue-js/dist/module/lib/fetch";
 
 export async function new_message(req, res) {
   let event = req.body.event;
