@@ -144,9 +144,6 @@ export async function new_message(req, res) {
     } else if (event.type === "app_home_opened") {
       const user = event.user;
       const blocks = await getLeaderboard();
-      blocks.push({
-        type: "divider",
-      });
       const snipeBlocks = await getLatestSnipes();
       blocks.push({
         type: "header",
@@ -169,7 +166,6 @@ export async function new_message(req, res) {
           blocks: blocks,
         },
       };
-      console.log(blocks);
       try {
         const url = "https://slack.com/api/views.publish";
         const result = await fetch(url, {
@@ -180,7 +176,6 @@ export async function new_message(req, res) {
           },
           body: JSON.stringify(message),
         });
-        console.log(result.json());
       } catch (err) {
         console.log(err);
       }
