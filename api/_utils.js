@@ -125,3 +125,41 @@ export async function updateUser(id, change) {
     if (error) console.log(error);
   }
 }
+
+export async function getLeaderboard() {
+  const { data: users, error } = await supabase
+    .from("users")
+    .select("*")
+    .order("score", { ascending: false });
+  if (error) console.log(error);
+
+  let blocks = [];
+  blocks.push({
+    type: "header",
+    text: {
+      type: "plain_text",
+      text: "Sniping Leaderboard 🎉",
+      emoji: true,
+    },
+  });
+  blocks.push({
+    type: "divider",
+  });
+  users.forEach((user, index) => {
+    blocks.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text:
+          "*" +
+          (index + 1) +
+          ".* <@" +
+          user.id +
+          "> - " +
+          user.score +
+          " points",
+      },
+    });
+  });
+  return blocks;
+}

@@ -5,8 +5,9 @@ import {
   getClassification,
   getLatestMessage,
   updateUser,
+  getLeaderboard,
 } from "./_utils";
-import { supabase, snipeChannel } from "./_constants";
+import { supabase, snipeChannel, token } from "./_constants";
 
 export async function new_message(req, res) {
   let event = req.body.event;
@@ -138,6 +139,29 @@ export async function new_message(req, res) {
           ],
           ts
         );
+      }
+    } else if (event.type === "app_home_opened") {
+      const user = event.user;
+      const blocks = await getLeaderboard();
+      const message = {
+        user_id: user,
+        view: {
+          type: "home",
+          blocks: blocks,
+        },
+      };
+      try {
+        const url = "https://slack.com/api/views.publish";
+        await fetch(url, {
+          method: "post",
+          headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(message),
+        });
+      } catch (err) {
+        console.log(err);
       }
     }
   } catch (err) {
