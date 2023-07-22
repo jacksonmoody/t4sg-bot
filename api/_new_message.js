@@ -81,9 +81,7 @@ export async function new_message(req, res) {
           .select("*")
           .eq("id", event.user_id);
         if (error) console.log(error);
-        console.log(users);
         if (users.length == 0) {
-          console.log("user exists");
           await supabase.from("users").insert([
             {
               id: event.user_id,
@@ -91,13 +89,13 @@ export async function new_message(req, res) {
             },
           ]);
         } else {
-          console.log("user exists");
           const score = users[0].score + 1;
-          console.log(score);
-          const { error } = await supabase
+          const { data, error } = await supabase
             .from("users")
-            .update({ id: event.user_id, score: score + 1 })
-            .eq("id", event.user_id);
+            .update({ id: event.user_id, score: score })
+            .eq("id", event.user_id)
+            .select();
+          console.log(data);
           if (error) console.log(error);
         }
         await supabase.from("snipes").insert([
