@@ -1,9 +1,9 @@
-import { clientID, clientSecret } from "./_constants";
+import { clientID } from "./_constants";
 export default async function auth(req, res) {
   const code = req.query.code;
   const url = "https://slack.com/api/oauth.v2.access";
   let headers = new Headers();
-  headers.set('Authorization', 'Basic ' + Buffer.from(clientID + ":" + clientSecret).toString('base64'));
+  headers.set('Authorization', 'Basic ' + clientID);
   const response = await fetch(url + "?code=" + code, {
     method: "POST",
     headers: {
