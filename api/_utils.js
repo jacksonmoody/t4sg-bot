@@ -189,7 +189,7 @@ export async function getLatestSnipes() {
   snipes.forEach((snipe) => {
     let sniped_id = "";
     if (snipe.sniped_id != null) {
-      sniped_id = "<@" + snipe.sniped_id + ">";
+      sniped_id = " sniped <@" + snipe.sniped_id + ">";
     }
     blocks.push({
       type: "image",
@@ -200,7 +200,7 @@ export async function getLatestSnipes() {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: "<@" + snipe.user_id + ">" + " sniped " + sniped_id,
+        text: "<@" + snipe.user_id + ">" + sniped_id,
       },
     });
     blocks.push({
