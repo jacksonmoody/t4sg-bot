@@ -153,7 +153,7 @@ export async function new_message(req, res) {
       } else {
         await publishMessage(
           snipeChannel,
-          "Please @ the person you are sniping and try again :)",
+          "No tag detected 😢 Please @ the person you are sniping and send the message again :)",
           null,
           ts
         );

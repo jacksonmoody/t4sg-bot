@@ -19,7 +19,7 @@ export default async function interactions(req, res) {
           author +
           ">'s snipe of <@" +
           sniped +
-          "> " +
+          ">: " +
           image
       );
       await publishMessage(

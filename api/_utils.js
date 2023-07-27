@@ -200,7 +200,7 @@ export async function getLatestSnipes() {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: "<@" + snipe.user_id + ">" + sniped_id,
+        text: "<@" + snipe.user_id + ">" + " sniped " + sniped_id,
       },
     });
     blocks.push({
