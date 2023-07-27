@@ -11,6 +11,7 @@ export default async function interactions(req, res) {
       const image = JSON.parse(value).image;
       const author = JSON.parse(value).author;
       const sniped = JSON.parse(value).sniped;
+      const person = JSON.parse(value).person;
       await publishMessage(
         engagementChannel,
         "Hey, <!channel>! <@" +
@@ -22,14 +23,17 @@ export default async function interactions(req, res) {
           ">: " +
           image
       );
-      await publishMessage(
-        engagementChannel,
-        "Type `/approve " +
-          author +
-          "` to approve the snipe or `/deny " +
-          author +
-          "` to deny it."
-      );
+      if (person) {
+        await publishMessage(
+          engagementChannel,
+          "Type `/deny " + author + "` to deny this snipe."
+        );
+      } else {
+        await publishMessage(
+          engagementChannel,
+          "Type `/approve " + author + "` to approve this snipe."
+        );
+      }
       res.status(200).send({ ok: true });
     } else {
       res.status(400).send({ error: "Invalid event type" });
