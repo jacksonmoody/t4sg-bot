@@ -40,7 +40,7 @@ export async function getLatestMessage(id) {
     },
   });
   const data = await response.json();
-  const mention = null;
+  let mention = null;
   if (data.messages[0].text.includes("<@")) {
     mention = data.messages[0].text.split("<@")[1].split(">")[0];
   }
@@ -187,6 +187,10 @@ export async function getLatestSnipes() {
     .limit(5);
   if (error) console.log(error);
   snipes.forEach((snipe) => {
+    let sniped_id = "";
+    if (snipe.sniped_id != null) {
+      sniped_id = "<@" + snipe.sniped_id + ">";
+    }
     blocks.push({
       type: "image",
       image_url: snipe.image,
@@ -196,7 +200,7 @@ export async function getLatestSnipes() {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: "<@" + snipe.user_id + ">" + " sniped <@" + snipe.sniped_id + ">",
+        text: "<@" + snipe.user_id + ">" + sniped_id,
       },
     });
     blocks.push({
