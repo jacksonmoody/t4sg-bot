@@ -26,12 +26,12 @@ export default async function interactions(req, res) {
       if (person) {
         await publishMessage(
           engagementChannel,
-          "Type `/deny " + author + "` to deny this snipe."
+          "Type `/deny " + author + "` if you want to invalidate this snipe."
         );
       } else {
         await publishMessage(
           engagementChannel,
-          "Type `/approve " + author + "` to approve this snipe."
+          "Type `/approve " + author + "` if you want to validate this snipe."
         );
       }
       res.status(200).send({ ok: true });
