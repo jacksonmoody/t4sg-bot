@@ -10,13 +10,16 @@ export default async function interactions(req, res) {
       const value = payload.message.blocks[1].elements[0].value;
       const image = JSON.parse(value).image;
       const author = JSON.parse(value).author;
+      const sniped = JSON.parse(value).sniped;
       await publishMessage(
         engagementChannel,
         "Hey, <!channel>! <@" +
           user +
           "> wants to contest <@" +
           author +
-          ">'s snipe: " +
+          ">'s snipe of <@" +
+          sniped +
+          "> " +
           image
       );
       await publishMessage(

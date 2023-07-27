@@ -40,7 +40,15 @@ export async function getLatestMessage(id) {
     },
   });
   const data = await response.json();
-  return data.messages[0].ts;
+  const mention = null;
+  if (data.messages[0].text.includes("<@")) {
+    mention = data.messages[0].text.split("<@")[1].split(">")[0];
+  }
+  const toReturn = {
+    mention: mention,
+    ts: data.messages[0].ts,
+  };
+  return toReturn;
 }
 
 export async function fetchFile(id) {
@@ -188,7 +196,7 @@ export async function getLatestSnipes() {
       type: "section",
       text: {
         type: "mrkdwn",
-        text: "<@" + snipe.user_id + ">",
+        text: "<@" + snipe.user_id + ">" + " sniped <@" + snipe.sniped_id + ">",
       },
     });
     blocks.push({
