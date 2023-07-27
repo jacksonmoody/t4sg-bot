@@ -16,7 +16,12 @@ export async function new_message(req, res) {
     if (event.type == "file_shared") {
       const { mention, ts } = await getLatestMessage(snipeChannel);
       if (mention) {
-        await publishMessage(snipeChannel, "Nice Snipe of <@" + mention + ">! 📸", null, ts);
+        await publishMessage(
+          snipeChannel,
+          "Nice Snipe of <@" + mention + ">! 📸",
+          null,
+          ts
+        );
         const file = await fetchFile(event.file_id);
         const image = await downloadImage(file.file.url_private_download);
         const classification = await getClassification(image.data.link);
@@ -146,7 +151,12 @@ export async function new_message(req, res) {
           );
         }
       } else {
-        await publishMessage(snipeChannel, "Please @ the person you are sniping and try again :)", null, ts);
+        await publishMessage(
+          snipeChannel,
+          "Please @ the person you are sniping and try again :)",
+          null,
+          ts
+        );
       }
     } else if (event.type === "app_home_opened") {
       const user = event.user;
